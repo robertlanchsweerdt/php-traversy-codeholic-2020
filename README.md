@@ -338,6 +338,8 @@ print_r($contents);
 
 - if you want to convert JSON data into an associative array, then use `json_decode($yourJSON);`
 
+- conversely, if you want to convert an array into JSON then you use `json_encode($yourArray);`
+
 6. Check if File or Directory exists
 
 - `file_exists('yourFile.txt');` // returns boolean
@@ -398,8 +400,44 @@ see code 'Student.php' for visual break-down
 
 ## cURL FUNCTIONS
 
-a tool that allows you to remotely interact with other services
+'Client URL': allows you to use different protocols (HTTP/HTTPS, FTP/SFTP, POP3/IMAP) to transfer data between networks.
+
+similar to JS using [`fetch`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) where `curl` is making **requests** and receiving **responses**, and `curl` allows you to submit a number of options such as **method** and **headers**.
+
+a tool that allows you to remotely interact with other services (download files, upload files, passing authentication, etc.)
+
+it uses the library called **libcurl** and the CLI called **curl**
 
 while you can get remote content using `file_get_contents()`, sometimes this is blocked due to a security policy. And `file_get_contents()` cannot pass additional headers or POST information. This is where `curl` functions are used.
 
+an important function when working with APIs
+
+working with JSON and arrays, use `json_decode($someJSON)` to convert from JSON to an array... use `json_encode($someArray)` to convert from an array to JSON
+
 see [PHP Doc on cURL Functions](https://www.php.net/manual/en/ref.curl.php)
+
+### cURL: Important Functions
+
+- `curl_init($url);`:initiates a cURL session with the network that you want to contact. This function accepts an argument, which is the url that you want to connect. Prior to PHP 8.0, it returned a resource. After PHP 8.0, it now returns an Object Class handle.
+- `curl_setopt($handle, $option, $value)`: when you want to set some options on the resource / handle. This involves three (3) arguments... (1) what you want to set the option on, (2) the option that you are setting; and (3) the value to be set on the option
+- `curl_setopt_array($handle, $optionsArray);`: when you have multiple [options](https://www.php.net/manual/en/function.curl-setopt.php) to set on the resource.
+- `curl_exec($handle);`: executing the connection that returns a **result** as an array. It will automatically print to the screen unless you set option `CURLOPT_RETURNTRANSFER => TRUE`
+- `curl_getinfo($handle, $option);`: returns an array with multiple information about the result / response. It accepts a **second argument** which is an option to specify what information you only want to return... such as `http_code`
+- `curl_close($handle);`: when you are done with your connection, you need to close it. However, since PHP 8.0 and because you are now returning an Object, you no longer need to `curl_close` because cURL is not returning a resource. The handle is automatically closed whenever the Object is destroyed or when there are no more references to the Object.
+
+### cURL: Create (POST) Data
+
+1. set `$url = "http://yournetworkconnection.com"`
+2. set `$postInfo = $arrayOfValues`
+3. `curl_init()`
+4. set `$options` which is an array of values
+
+- `CURLOPT_URL => $url`
+- `CURLOPT_RETURNTRANSFER => TRUE`
+- `CURLOPT_POST => TRUE`
+- `CURLOPT_HTTPHEADER => ['content-type: application/json']`
+- `CURLOPT_POSTFIELDS => json_encode($postInfo)`
+
+5. `curl_setopt_array($resource, $options);`
+6. `$result = curl_exec($resource);`
+7. `curl_close($resource);`
