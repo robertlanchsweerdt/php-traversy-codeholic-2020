@@ -5,12 +5,12 @@
     define('DB_HOST', 'localhost');
     define('DB_USER', 'php_master');
     define('DB_PASS', '123456');
-    define('DB_NAME', 'productss_crud');
+    define('DB_NAME', 'products_crud');
 
     $options = [
-        PDO::ATTR_ERRMODE   => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE  => PDO::FETCH_OBJ,
-        PDO::ATTR_EMULATE_PREPARES  => FALSE
+        PDO::ATTR_ERRMODE               => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE    => PDO::FETCH_OBJ,
+        PDO::ATTR_EMULATE_PREPARES      => FALSE
     ];
 
     // set the DSN (Data Source Name)
@@ -22,10 +22,10 @@
         $conn = new PDO($dsn, DB_USER, DB_PASS, $options);
     
         // set-up sql query
-        $sql = 'SELECT * FROM products ORDER BY price ASC';
+        $query = 'SELECT * FROM products ORDER BY price ASC';
     
         // when wanting to run a query, then use 'prepare' stmts
-        $stmt = $conn->prepare($sql);
+        $stmt = $conn->prepare($query);
     
         // execute the query
         // 'execute' syntax is better to use if making changes to the database schema
@@ -61,6 +61,7 @@
 
 <body>
     <h1>Products CRUD</h1>
+    <a href="create.php" class="btn btn-success">Create Product</a>
     <table class="table">
         <thead>
             <tr>
