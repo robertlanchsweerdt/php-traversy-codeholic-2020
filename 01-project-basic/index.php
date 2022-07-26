@@ -5,7 +5,7 @@
     define('DB_HOST', 'localhost');
     define('DB_USER', 'php_master');
     define('DB_PASS', '123456');
-    define('DB_NAME', 'products_crud');
+    define('DB_NAME', 'productss_crud');
 
     $options = [
         PDO::ATTR_ERRMODE   => PDO::ERRMODE_EXCEPTION,
@@ -16,22 +16,30 @@
     // set the DSN (Data Source Name)
     $dsn = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME;
 
-    // create a PDO / connection instance
-    // including $options is an alternative to 'setAttribute'
-    $conn = new PDO($dsn, DB_USER, DB_PASS, $options);
+    try{
+        // create a PDO / connection instance
+        // including $options is an alternative to 'setAttribute'
+        $conn = new PDO($dsn, DB_USER, DB_PASS, $options);
+    
+        // set-up sql query
+        $sql = 'SELECT * FROM products ORDER BY price ASC';
+    
+        // when wanting to run a query, then use 'prepare' stmts
+        $stmt = $conn->prepare($sql);
+    
+        // execute the query
+        // 'execute' syntax is better to use if making changes to the database schema
+        $stmt->execute();
+    
+        // fetch all instances and HOW you'd like to fetch it
+        // if you didn't specify in $options
+        $products = $stmt->fetchAll();
 
-    // set-up sql query
-    $sql = 'SELECT * FROM products ORDER BY price ASC';
+    } catch(PDOException $e){
+        echo 'Connection failed: ' . $e->getMessage();
+        exit;
+    }
 
-    // when wanting to run a query, then use 'prepare' stmts
-    $stmt = $conn->prepare($sql);
-
-    // execute the query
-    // 'execute' syntax is better to use if making changes to the database schema
-    $stmt->execute();
-
-    // fetch all instances and HOW you'd like to fetch it
-    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -68,20 +76,19 @@
             <?php foreach($products as $product){
         echo "    
             <tr>
-                <th scope='row'>{$product['id']}</th>
-                <td>{$product['title']}</td>
-                <td>{$product['description']}</td>
-                <td>{$product['image']}</td>
-                <td>{$product['price']}</td>
-                <td>{$product['create_date']}</td>
+                <th scope='row'>{$product->id}</th>
+                <td>{$product->title}</td>
+                <td>{$product->description}</td>
+                <td>{$product->image}</td>
+                <td>{$product->price}</td>
+                <td>{$product->create_date}</td>
                 <td class='d-flex gap-2'>
                 <button type='button' class='btn btn-primary'>Edit</button>
-<button type='button' class='btn btn-danger'>Delete</button></td>
+                <button type='button' class='btn btn-danger'>Delete</button></td>
             </tr>";
         }?>
         </tbody>
     </table>
-
 </body>
 
 </html>
